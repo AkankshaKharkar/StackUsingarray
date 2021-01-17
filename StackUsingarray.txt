@@ -1,0 +1,300 @@
+#include<iostream>
+using namespace std;
+typedef int BOOL;
+#define TRUE 1
+#define FALSE 0
+
+typedef struct node
+{
+	int data;
+	struct node*next;
+}NODE,*PNODE;
+
+class Singly_Circular
+{
+private:PNODE head,tail;
+public:
+	Singly_Circular();
+	~Singly_Circular();
+	BOOL InsertFirst(int);
+	BOOL InsertLast(int);
+    BOOL DeleteLast();
+    BOOL DeleteFirst();
+	void DisplayF();
+	int Count();
+	int Search(int);
+	BOOL InsertAtPos(int,int);
+	BOOL DeleteAtPos(int);
+};
+Singly_Circular::Singly_Circular()
+{
+	head = NULL;
+	tail=NULL;
+}
+Singly_Circular::~Singly_Circular()
+{
+	PNODE temp,navigate;
+	if(head!=NULL&&tail!=NULL)
+	{
+		navigate=head;
+		while(navigate->next!=head)
+		{
+			temp=navigate->next;
+			free(navigate);
+			navigate=temp;
+		}
+	}
+
+}
+
+BOOL Singly_Circular::InsertFirst(int value)
+{
+	PNODE newn=NULL;
+	newn=new NODE;
+	if(newn==NULL)
+	{
+	   return FALSE;
+	}
+	newn->data=value;
+    newn->next=NULL;
+	if(head==NULL&&tail==NULL)
+	{
+		head=newn;
+	    tail=newn;
+		tail->next=head;
+	}
+	else
+	{
+		newn->next=head;
+		head=newn;
+		tail->next=head;
+	}
+	return TRUE;
+}
+BOOL Singly_Circular::InsertLast(int value)
+{
+	PNODE newn=NULL;
+		newn=new NODE;
+		if(newn==NULL)
+		{
+		   return FALSE;
+		}
+		newn->data=value;
+	    newn->next=NULL;
+		if(head==NULL&&tail==NULL)
+		{
+			head=newn;
+		    tail=newn;
+			tail->next=head;
+		}
+
+		else
+		{
+			tail->next=newn;
+			tail=newn;
+			tail->next=head;
+		}
+	    printf("inserted last node successfully\n");
+		return TRUE;
+}
+BOOL Singly_Circular::DeleteLast()
+	{
+		if(head==NULL&&tail==NULL)
+			{
+			  return FALSE;
+			}
+			else if(head==tail)
+			{
+				free(tail);
+				head=(tail)=NULL;
+			}
+			else
+			{
+				struct node*temp=head;
+				while(temp->next!=tail)
+				{
+					     temp=temp->next;
+				}
+				  tail=temp;
+			      free(temp->next);
+			      tail->next=head;
+			}
+	return TRUE;
+	}
+
+void Singly_Circular::DisplayF()
+{
+   if(head!=NULL&&tail!=NULL)
+   {
+		struct node*temp=head;
+		do
+		{
+         printf("%d\n",temp->data);
+		 temp=temp->next;
+		}while(temp!=head);
+   }
+
+}
+
+
+int Singly_Circular::Count()
+	{
+		if((head==NULL)&&(tail==NULL))
+		{
+		printf("the list is empty");
+		}
+		else
+		{
+			int icnt=1;
+			struct node*temp=head;
+			do
+			  {
+				 temp=temp->next;
+				 icnt+=1;
+			   }while(temp->next!=head);
+			return icnt;
+		}
+	}
+int Singly_Circular::Search(int value)
+	{
+		int pos=1;
+	    struct node*temp=head;
+	  do
+	  {
+		if(temp->data==value)
+		{
+			return pos;
+		}
+		else
+		{
+			temp=temp->next;
+			pos++;
+		}
+		return pos;
+	  }while(temp->next!=head);
+  }
+BOOL Singly_Circular::DeleteFirst()
+{
+	if(head==NULL&&tail==NULL)
+	{
+		return FALSE;
+	}
+	else if(head==tail)
+	{
+		free(head);
+		head=tail=NULL;
+	}
+	else
+	{
+		head=head->next;
+		free(tail->next);
+		tail->next=head;
+	}
+	return TRUE;
+}
+BOOL Singly_Circular::InsertAtPos(int value,int pos)
+	{
+		if(pos<=0)
+		{
+			return FALSE;
+
+		}
+		else if(pos> Count()+1)
+		{
+			return FALSE;
+		}
+		else if(pos==1)
+		{
+			InsertFirst(value);
+		}
+		else if(pos==Count()+1)
+		{
+			InsertLast(value);
+		}
+		else
+		{
+			struct node*newn=NULL;
+			struct node* temp=(head);
+            newn=new NODE;
+               if(newn==NULL)
+            {
+            	return FALSE;
+            }
+			 newn->data=value;
+			 newn->next=NULL;
+			 while(pos-1>1)
+			 {
+				 temp= temp->next;
+				 pos--;
+			 }
+			 newn->next=temp->next;
+			 temp->next=newn;
+		}
+		return TRUE;
+	}
+BOOL  Singly_Circular::DeleteAtPos(int pos)
+{
+	if(pos<=0)
+	{
+		return FALSE;
+
+	}
+	else if(pos> Count())
+	{
+		return FALSE;
+	}
+	else if(pos==1)
+	{
+		DeleteFirst();
+	}
+	else if(pos==Count())
+	{
+		DeleteLast();
+	}
+	else
+	{
+		struct node*temp2=NULL;
+		struct node* temp1=(head);
+		 while(pos-1>1)
+		 {
+			 temp1= temp1->next;
+			 pos--;
+		 }
+		 temp2=temp1->next;
+		 temp1->next=temp1->next->next;
+		 free(temp2);
+	}
+	return TRUE;
+
+}
+
+
+int main()
+{
+	Singly_Circular obj;
+	obj.InsertFirst(11);
+	obj.InsertFirst(21);
+	obj.InsertFirst(31);
+	obj.InsertFirst(41);
+	obj.InsertFirst(51);
+	obj.DisplayF();
+	obj.InsertLast(101);
+	obj.DisplayF();
+	printf("deleted last node successfully\n");
+	obj.DeleteLast();
+	obj.DisplayF();
+	int icnt=obj.Count();
+	printf("no.of nodes are: %d\n",icnt);
+	int pos=obj.Search(41);
+	printf("the given node is present at pos: %d\n",pos);
+	obj.InsertAtPos(202,2);
+	printf("inserted node at given posn successfully\n");
+	obj.DisplayF();
+	printf("deleted node at that posn successfully\n");
+	obj.DeleteAtPos(2);
+	obj.DisplayF();
+//	printf("deleted the first node successfully\n");
+//	obj.DeleteFirst();
+//	obj.DisplayF();
+	return 0;
+}
